@@ -4,7 +4,7 @@ import Card from './Card';
 import CardSelector from './CardSelector';
 import ProbabilityResults from './ProbabilityResults';
 
-// URL de l'API backend
+// Backend API URL
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 interface CalculationResults {
@@ -16,56 +16,56 @@ interface CalculationResults {
 }
 
 const PokerCalculator: React.FC = () => {
-  // État pour les cartes du joueur (2 cartes max)
+  // Player cards state (2 cards max)
   const [playerCards, setPlayerCards] = useState<(string | null)[]>([null, null]);
   
-  // État pour les cartes du board (5 cartes max)
+  // Board cards state (5 cards max)
   const [boardCards, setBoardCards] = useState<(string | null)[]>([null, null, null, null, null]);
   
-  // État pour le mode de sélection (player ou board)
+  // Selection mode state (player or board)
   const [selectionMode, setSelectionMode] = useState<'player' | 'board' | null>(null);
   
-  // État pour l'index de la carte en cours de sélection
+  // Current card index being selected
   const [currentCardIndex, setCurrentCardIndex] = useState<number | null>(null);
   
-  // État pour les résultats des calculs
+  // Calculation results state
   const [results, setResults] = useState<CalculationResults | null>(null);
   
-  // État pour le chargement
+  // Loading state
   const [loading, setLoading] = useState<boolean>(false);
   
-  // Liste de toutes les cartes utilisées
+  // List of all used cards
   const usedCards = [...playerCards, ...boardCards].filter(card => card !== null) as string[];
   
-  // Fonction pour gérer le clic sur une carte du joueur
+  // Handle click on player card
   const handlePlayerCardClick = (index: number) => {
     if (playerCards[index]) {
-      // Si la carte existe déjà, on la supprime
+      // If card already exists, remove it
       const newPlayerCards = [...playerCards];
       newPlayerCards[index] = null;
       setPlayerCards(newPlayerCards);
     } else {
-      // Sinon, on ouvre le sélecteur de carte
+      // Otherwise, open card selector
       setSelectionMode('player');
       setCurrentCardIndex(index);
     }
   };
   
-  // Fonction pour gérer le clic sur une carte du board
+  // Handle click on board card
   const handleBoardCardClick = (index: number) => {
     if (boardCards[index]) {
-      // Si la carte existe déjà, on la supprime
+      // If card already exists, remove it
       const newBoardCards = [...boardCards];
       newBoardCards[index] = null;
       setBoardCards(newBoardCards);
     } else {
-      // Sinon, on ouvre le sélecteur de carte
+      // Otherwise, open card selector
       setSelectionMode('board');
       setCurrentCardIndex(index);
     }
   };
   
-  // Fonction pour sélectionner une carte
+  // Function to select a card
   const handleSelectCard = (card: string) => {
     if (selectionMode === 'player' && currentCardIndex !== null) {
       const newPlayerCards = [...playerCards];
@@ -77,25 +77,25 @@ const PokerCalculator: React.FC = () => {
       setBoardCards(newBoardCards);
     }
     
-    // Fermer le sélecteur
+    // Close selector
     setSelectionMode(null);
     setCurrentCardIndex(null);
   };
   
-  // Fonction pour réinitialiser toutes les cartes
+  // Function to reset all cards
   const handleReset = () => {
     setPlayerCards([null, null]);
     setBoardCards([null, null, null, null, null]);
     setResults(null);
   };
   
-  // Fonction pour calculer les probabilités
+  // Function to calculate probabilities
   const calculateProbabilities = async () => {
     const validPlayerCards = playerCards.filter(card => card !== null) as string[];
     const validBoardCards = boardCards.filter(card => card !== null) as string[];
     
     if (validPlayerCards.length === 0) {
-      alert('Veuillez sélectionner au moins une carte pour le joueur');
+      alert('Please select at least one card for the player');
       return;
     }
     
@@ -109,14 +109,14 @@ const PokerCalculator: React.FC = () => {
       
       setResults(response.data);
     } catch (error) {
-      console.error('Erreur lors du calcul des probabilités:', error);
-      alert('Une erreur est survenue lors du calcul des probabilités');
+      console.error('Error calculating probabilities:', error);
+      alert('An error occurred while calculating probabilities');
     } finally {
       setLoading(false);
     }
   };
   
-  // Recalculer automatiquement les probabilités lorsque les cartes changent
+  // Automatically recalculate probabilities when cards change
   useEffect(() => {
     const validPlayerCards = playerCards.filter(card => card !== null);
     const validBoardCards = boardCards.filter(card => card !== null);
@@ -127,17 +127,23 @@ const PokerCalculator: React.FC = () => {
   }, [playerCards, boardCards]);
   
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-center mb-8">Calculateur de Probabilités Poker</h1>
+    <div className="max-w-6xl mx-auto">
+      <h1 className="text-4xl font-bold text-center mb-8 text-white drop-shadow-lg">
+        <span className="text-white glow-subtle">
+          Poker Odds Calculator
+        </span>
+      </h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
-          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 className="text-xl font-semibold mb-4">Vos Cartes</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <div className="glass p-6 rounded-xl shadow-lg backdrop-blur-md mb-6 glow-subtle">
+            <h2 className="text-2xl font-semibold mb-6 text-white">
+              Your Cards
+            </h2>
             
             <div className="mb-8">
-              <h3 className="text-lg font-medium mb-2">Main du Joueur</h3>
-              <div className="flex space-x-4 justify-center">
+              <h3 className="text-xl font-medium mb-4 text-gray-300">Player Hand</h3>
+              <div className="flex flex-wrap justify-center gap-4">
                 {playerCards.map((card, index) => (
                   <Card
                     key={`player-${index}`}
@@ -149,8 +155,8 @@ const PokerCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div>
-              <h3 className="text-lg font-medium mb-2">Board</h3>
+            <div className="mb-6">
+              <h3 className="text-xl font-medium mb-4 text-gray-300">Board</h3>
               <div className="flex flex-wrap gap-4 justify-center">
                 {boardCards.map((card, index) => (
                   <Card
@@ -163,12 +169,13 @@ const PokerCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-6 flex justify-center">
+            <div className="mt-8 flex justify-center">
               <button
                 onClick={handleReset}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                className="px-6 py-3 bg-gray-800 text-white rounded-full 
+                hover:bg-gray-700 transform hover:scale-105 transition-all border border-white/10 shadow-lg"
               >
-                Réinitialiser
+                Reset
               </button>
             </div>
           </div>

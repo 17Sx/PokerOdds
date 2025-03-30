@@ -12,10 +12,10 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
   const values = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
   const suits = ['h', 'd', 'c', 's'];
   const suitNames: Record<string, string> = {
-    h: 'Cœur',
-    d: 'Carreau',
-    c: 'Trèfle',
-    s: 'Pique',
+    h: 'Hearts',
+    d: 'Diamonds',
+    c: 'Clubs',
+    s: 'Spades',
   };
 
   const handleValueClick = (value: string) => {
@@ -25,7 +25,7 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
   const handleSuitClick = (suit: string) => {
     if (selectedValue) {
       const card = selectedValue + suit;
-      // Vérifier si la carte est déjà utilisée
+      // Check if the card is already used
       if (!usedCards.includes(card)) {
         onSelectCard(card);
         resetSelection();
@@ -45,20 +45,20 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <h3 className="text-lg font-semibold mb-4">Sélectionnez une carte</h3>
+    <div className="glass p-6 rounded-xl shadow-lg backdrop-blur-md animate-fadeIn glow-subtle">
+      <h3 className="text-xl font-semibold mb-6 text-white">Select a card</h3>
       
-      <div className="mb-4">
+      <div className="mb-6">
         <div className="grid grid-cols-7 gap-2">
           {values.map((value) => (
             <button
               key={value}
               onClick={() => handleValueClick(value)}
               className={`
-                p-2 rounded-md text-center
+                p-3 rounded-lg text-center text-lg font-medium transition-all
                 ${selectedValue === value 
-                  ? 'bg-blue-500 text-white' 
-                  : 'bg-gray-100 hover:bg-gray-200'
+                  ? 'bg-white/20 text-white shadow-lg shadow-white/5' 
+                  : 'bg-white/5 text-white hover:bg-white/10'
                 }
               `}
             >
@@ -68,20 +68,20 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
         </div>
       </div>
       
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {suits.map((suit) => (
           <button
             key={suit}
             onClick={() => handleSuitClick(suit)}
             disabled={selectedValue ? isCardUsed(selectedValue, suit) : false}
             className={`
-              p-2 rounded-md text-center
+              p-3 rounded-lg text-center transition-all
               ${selectedSuit === suit 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-100 hover:bg-gray-200'
+                ? 'bg-white/20 text-white shadow-lg shadow-white/5' 
+                : 'bg-white/5 text-white hover:bg-white/10'
               }
               ${selectedValue && isCardUsed(selectedValue, suit) 
-                ? 'opacity-50 cursor-not-allowed' 
+                ? 'opacity-30 cursor-not-allowed' 
                 : ''
               }
             `}
@@ -91,12 +91,12 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
         ))}
       </div>
       
-      <div className="mt-4 flex justify-end">
+      <div className="mt-6 flex justify-end">
         <button
           onClick={resetSelection}
-          className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+          className="px-4 py-2 bg-white/5 text-white rounded-lg hover:bg-white/10 transition-all"
         >
-          Annuler
+          Cancel
         </button>
       </div>
     </div>

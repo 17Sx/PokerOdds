@@ -17,6 +17,115 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            backdropBlur: {
+              xs: '2px',
+            },
+            boxShadow: {
+              'glass': '0 8px 32px 0 rgba(255, 255, 255, 0.1)',
+            },
+            animation: {
+              'fadeIn': 'fadeIn 0.5s ease-in-out',
+              'slideUp': 'slideUp 0.5s ease-in-out',
+              'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 3s ease-in-out infinite',
+              'glow': 'glow 3s ease-in-out infinite',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              glow: {
+                '0%, 100%': { boxShadow: '0 0 5px 0 rgba(255, 255, 255, 0.05)' },
+                '50%': { boxShadow: '0 0 15px 0 rgba(255, 255, 255, 0.15)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      .glass {
+        background: rgba(20, 20, 20, 0.3);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
+      
+      .glass-dark {
+        background: rgba(10, 10, 10, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+      }
+      
+      .glass-card {
+        background: rgba(30, 30, 30, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 0.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 rgba(255, 255, 255, 0.07);
+      }
+      
+      .glow-subtle {
+        box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.05);
+        animation: glow 4s ease-in-out infinite;
+      }
+      
+      @keyframes glow {
+        0%, 100% {
+          box-shadow: 0 0 5px 0 rgba(255, 255, 255, 0.05);
+        }
+        50% {
+          box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.15);
+        }
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: rgba(10, 10, 10, 0.3);
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      /* Base transitions */
+      * {
+        transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+      }
+    </style>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -26,7 +135,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Poker Odds Calculator</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
