@@ -8,17 +8,16 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ card, onClick, selectable = false, selected = false }) => {
-  // Logic to determine the color and value of the card
   const getSuitColor = (suit: string): string => {
     return ['h', 'd'].includes(suit) ? 'text-gray-400' : 'text-gray-600';
   };
 
   const getSuitSymbol = (suit: string): string => {
     const symbols: Record<string, string> = {
-      h: '♥', // Heart
-      d: '♦', // Diamond
-      c: '♣', // Club
-      s: '♠', // Spade
+      h: '♥', 
+      d: '♦', 
+      c: '♣', 
+      s: '♠', 
     };
     return symbols[suit] || suit;
   };
@@ -26,10 +25,9 @@ const Card: React.FC<CardProps> = ({ card, onClick, selectable = false, selected
   const getValueDisplay = (value: string): string => {
     const valueMap: Record<string, string> = {
       T: '10',
-      J: 'J', // Jack
-      Q: 'Q', // Queen
-      K: 'K', // King
-      A: 'A', // Ace
+      J: 'J', 
+      K: 'K', 
+      A: 'A', 
     };
     return valueMap[value] || value;
   };

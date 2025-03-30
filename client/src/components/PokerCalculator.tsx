@@ -127,23 +127,18 @@ const PokerCalculator: React.FC = () => {
   }, [playerCards, boardCards]);
   
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-4xl font-bold text-center mb-8 text-white drop-shadow-lg">
-        <span className="text-white glow-subtle">
-          Poker Odds Calculator
-        </span>
-      </h1>
+    <div className="max-w-6xl mx-auto flex flex-col items-center">
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
         <div className="lg:col-span-2">
-          <div className="glass p-6 rounded-xl shadow-lg backdrop-blur-md mb-6 glow-subtle">
-            <h2 className="text-2xl font-semibold mb-6 text-white">
+          <div className="glass p-6 rounded-xl shadow-lg backdrop-blur-md mb-8 glow-subtle">
+            <h2 className="text-2xl font-semibold mb-8 text-white text-center">
               Your Cards
             </h2>
             
-            <div className="mb-8">
-              <h3 className="text-xl font-medium mb-4 text-gray-300">Player Hand</h3>
-              <div className="flex flex-wrap justify-center gap-4">
+            <div className="mb-10">
+              <h3 className="text-xl font-medium mb-6 text-gray-300 text-center">Player Hand</h3>
+              <div className="flex flex-wrap justify-center gap-6">
                 {playerCards.map((card, index) => (
                   <Card
                     key={`player-${index}`}
@@ -155,9 +150,9 @@ const PokerCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div className="mb-6">
-              <h3 className="text-xl font-medium mb-4 text-gray-300">Board</h3>
-              <div className="flex flex-wrap gap-4 justify-center">
+            <div className="mb-10">
+              <h3 className="text-xl font-medium mb-6 text-gray-300 text-center">Board</h3>
+              <div className="flex flex-wrap gap-6 justify-center">
                 {boardCards.map((card, index) => (
                   <Card
                     key={`board-${index}`}
@@ -169,11 +164,13 @@ const PokerCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-8 flex justify-center">
+            <div className="mt-10 flex justify-center">
               <button
                 onClick={handleReset}
-                className="px-6 py-3 bg-gray-800 text-white rounded-full 
-                hover:bg-gray-700 transform hover:scale-105 transition-all border border-white/10 shadow-lg"
+                className="glass px-8 py-3 text-white rounded-lg 
+                hover:bg-white/10 transform hover:scale-105 transition-all 
+                border border-white/10 shadow-lg glow-subtle font-medium
+                backdrop-blur-md relative z-10"
               >
                 Reset
               </button>
@@ -181,18 +178,24 @@ const PokerCalculator: React.FC = () => {
           </div>
           
           {selectionMode && currentCardIndex !== null && (
-            <CardSelector
-              onSelectCard={handleSelectCard}
-              usedCards={usedCards}
-            />
+            <div className="flex justify-center">
+              <div className="w-full max-w-lg">
+                <CardSelector
+                  onSelectCard={handleSelectCard}
+                  usedCards={usedCards}
+                />
+              </div>
+            </div>
           )}
         </div>
         
-        <div>
-          <ProbabilityResults
-            results={results}
-            loading={loading}
-          />
+        <div className="flex justify-center">
+          <div className="w-full">
+            <ProbabilityResults
+              results={results}
+              loading={loading}
+            />
+          </div>
         </div>
       </div>
     </div>

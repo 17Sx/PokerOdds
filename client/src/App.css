@@ -36,3 +36,65 @@
     transform: rotate(360deg);
   }
 }
+
+.app-container {
+  overflow: hidden;
+}
+
+/* Animations for the metallic spheres */
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes floatHorizontal {
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes pulse-slow {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+/* Apply animations to specific spheres */
+#root::before {
+  animation: floatAnimation 15s ease-in-out infinite;
+}
+
+#root::after {
+  animation: floatHorizontal 20s ease-in-out infinite;
+}
+
+.app-container::before {
+  animation: floatAnimation 12s ease-in-out infinite 2s;
+}
+
+.app-container::after {
+  animation: floatHorizontal 12s ease-in-out infinite 3s;
+}
+
+main::before {
+  animation: pulse-slow 8s ease-in-out infinite;
+}

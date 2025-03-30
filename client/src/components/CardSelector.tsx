@@ -45,17 +45,17 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
   };
 
   return (
-    <div className="glass p-6 rounded-xl shadow-lg backdrop-blur-md animate-fadeIn glow-subtle">
-      <h3 className="text-xl font-semibold mb-6 text-white">Select a card</h3>
+    <div className="glass p-8 rounded-xl shadow-lg backdrop-blur-md animate-fadeIn glow-subtle">
+      <h3 className="text-xl font-semibold mb-8 text-white text-center">Select a card</h3>
       
-      <div className="mb-6">
-        <div className="grid grid-cols-7 gap-2">
+      <div className="mb-8">
+        <div className="grid grid-cols-7 gap-3 max-w-xl mx-auto">
           {values.map((value) => (
             <button
               key={value}
               onClick={() => handleValueClick(value)}
               className={`
-                p-3 rounded-lg text-center text-lg font-medium transition-all
+                p-4 rounded-lg text-center text-lg font-medium transition-all
                 ${selectedValue === value 
                   ? 'bg-white/20 text-white shadow-lg shadow-white/5' 
                   : 'bg-white/5 text-white hover:bg-white/10'
@@ -68,14 +68,14 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
         </div>
       </div>
       
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl mx-auto mb-8">
         {suits.map((suit) => (
           <button
             key={suit}
             onClick={() => handleSuitClick(suit)}
             disabled={selectedValue ? isCardUsed(selectedValue, suit) : false}
             className={`
-              p-3 rounded-lg text-center transition-all
+              p-4 rounded-lg text-center transition-all
               ${selectedSuit === suit 
                 ? 'bg-white/20 text-white shadow-lg shadow-white/5' 
                 : 'bg-white/5 text-white hover:bg-white/10'
@@ -91,10 +91,10 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
         ))}
       </div>
       
-      <div className="mt-6 flex justify-end">
+      <div className="flex justify-center">
         <button
           onClick={resetSelection}
-          className="px-4 py-2 bg-white/5 text-white rounded-lg hover:bg-white/10 transition-all"
+          className="glass px-8 py-3 text-white rounded-lg hover:bg-white/10 transform hover:scale-105 transition-all border border-white/10 shadow-lg glow-subtle"
         >
           Cancel
         </button>
