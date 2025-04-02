@@ -18,31 +18,22 @@ interface CalculationResults {
 }
 
 const PokerCalculator: React.FC = () => {
-  // Player cards state (2 cards max)
   const [playerCards, setPlayerCards] = useState<(string | null)[]>([null, null]);
   
-  // Board cards state (5 cards max)
   const [boardCards, setBoardCards] = useState<(string | null)[]>([null, null, null, null, null]);
   
-  // Selection mode state (player or board)
   const [selectionMode, setSelectionMode] = useState<'player' | 'board' | null>(null);
   
-  // Current card index being selected
   const [currentCardIndex, setCurrentCardIndex] = useState<number | null>(null);
   
-  // Calculation results state
   const [results, setResults] = useState<CalculationResults | null>(null);
   
-  // Loading state
   const [loading, setLoading] = useState<boolean>(false);
   
-  // List of all used cards
   const usedCards = [...playerCards, ...boardCards].filter(card => card !== null) as string[];
   
-  // Handle click on player card
   const handlePlayerCardClick = (index: number) => {
     if (playerCards[index]) {
-      // If card already exists, remove it
       const newPlayerCards = [...playerCards];
       newPlayerCards[index] = null;
       setPlayerCards(newPlayerCards);
@@ -53,21 +44,17 @@ const PokerCalculator: React.FC = () => {
     }
   };
   
-  // Handle click on board card
   const handleBoardCardClick = (index: number) => {
     if (boardCards[index]) {
-      // If card already exists, remove it
       const newBoardCards = [...boardCards];
       newBoardCards[index] = null;
       setBoardCards(newBoardCards);
     } else {
-      // Otherwise, open card selector
       setSelectionMode('board');
       setCurrentCardIndex(index);
     }
   };
   
-  // Function to select a card
   const handleSelectCard = (card: string) => {
     if (selectionMode === 'player' && currentCardIndex !== null) {
       const newPlayerCards = [...playerCards];
