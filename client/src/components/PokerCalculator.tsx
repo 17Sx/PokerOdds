@@ -5,7 +5,9 @@ import CardSelector from './CardSelector';
 import ProbabilityResults from './ProbabilityResults';
 
 // Backend API URL
-const API_URL = '/api';
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://poker-odds-ten.vercel.app/api'
+  : 'http://localhost:5000/api';
 
 interface CalculationResults {
   winProbability: string;
@@ -102,15 +104,23 @@ const PokerCalculator: React.FC = () => {
     setLoading(true);
     
     try {
+      console.log('Sending request to:', API_URL);
+      console.log('With data:', { playerCards: validPlayerCards, boardCards: validBoardCards });
+      
       const response = await axios.post(`${API_URL}/calculate`, {
         playerCards: validPlayerCards,
         boardCards: validBoardCards
       });
       
+      console.log('Response received:', response.data);
       setResults(response.data);
     } catch (error) {
       console.error('Error calculating probabilities:', error);
-      alert('An error occurred while calculating probabilities');
+      if (axios.isAxiosError(error)) {
+        alert(`Error: ${error.response?.data?.message || error.message}`);
+      } else {
+        alert('An error occurred while calculating probabilities. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -208,4 +218,4 @@ const PokerCalculator: React.FC = () => {
   );
 };
 
-export default PokerCalculator; 
+export default PokerCalculator;
