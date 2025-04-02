@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Card from './Card';
 import CardSelector from './CardSelector';
@@ -90,7 +90,7 @@ const PokerCalculator: React.FC = () => {
   };
   
   // Function to calculate probabilities
-  const calculateProbabilities = async () => {
+  const calculateProbabilities = useCallback(async () => {
     const validPlayerCards = playerCards.filter(card => card !== null) as string[];
     const validBoardCards = boardCards.filter(card => card !== null) as string[];
     
@@ -114,7 +114,7 @@ const PokerCalculator: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [playerCards, boardCards]);
   
   // Automatically recalculate probabilities when cards change
   useEffect(() => {
