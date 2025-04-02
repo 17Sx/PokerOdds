@@ -38,7 +38,6 @@ const PokerCalculator: React.FC = () => {
       newPlayerCards[index] = null;
       setPlayerCards(newPlayerCards);
     } else {
-      // Otherwise, open card selector
       setSelectionMode('player');
       setCurrentCardIndex(index);
     }
@@ -71,14 +70,12 @@ const PokerCalculator: React.FC = () => {
     setCurrentCardIndex(null);
   };
   
-  // Function to reset all cards
   const handleReset = () => {
     setPlayerCards([null, null]);
     setBoardCards([null, null, null, null, null]);
     setResults(null);
   };
   
-  // Function to calculate probabilities
   const calculateProbabilities = useCallback(async () => {
     const validPlayerCards = playerCards.filter(card => card !== null) as string[];
     const validBoardCards = boardCards.filter(card => card !== null) as string[];
@@ -113,7 +110,6 @@ const PokerCalculator: React.FC = () => {
     }
   }, [playerCards, boardCards]);
   
-  // Automatically recalculate probabilities when cards change
   useEffect(() => {
     const validPlayerCards = playerCards.filter(card => card !== null);
     
@@ -122,7 +118,6 @@ const PokerCalculator: React.FC = () => {
     }
   }, [playerCards, boardCards, calculateProbabilities]);
   
-  // Function to handle cancel
   const handleCancel = () => {
     setSelectionMode(null);
     setCurrentCardIndex(null);
