@@ -119,12 +119,11 @@ const PokerCalculator: React.FC = () => {
   // Automatically recalculate probabilities when cards change
   useEffect(() => {
     const validPlayerCards = playerCards.filter(card => card !== null);
-    const validBoardCards = boardCards.filter(card => card !== null);
     
     if (validPlayerCards.length > 0) {
       calculateProbabilities();
     }
-  }, [playerCards, boardCards]);
+  }, [playerCards, boardCards, calculateProbabilities]);
   
   // Function to handle cancel
   const handleCancel = () => {
