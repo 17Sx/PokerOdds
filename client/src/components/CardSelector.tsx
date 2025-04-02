@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 interface CardSelectorProps {
   onSelectCard: (card: string) => void;
   usedCards: string[];
+  onCancel: () => void;
 }
 
-const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) => {
+const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards, onCancel }) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [selectedSuit, setSelectedSuit] = useState<string | null>(null);
 
@@ -93,7 +94,7 @@ const CardSelector: React.FC<CardSelectorProps> = ({ onSelectCard, usedCards }) 
       
       <div className="flex justify-center">
         <button
-          onClick={resetSelection}
+          onClick={onCancel}
           className="glass px-8 py-3 text-white rounded-lg hover:bg-white/10 transform hover:scale-105 transition-all border border-white/10 shadow-lg glow-subtle"
         >
           Cancel

@@ -5,7 +5,7 @@ import CardSelector from './CardSelector';
 import ProbabilityResults from './ProbabilityResults';
 
 // Backend API URL
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = '/api';
 
 interface CalculationResults {
   winProbability: string;
@@ -102,7 +102,7 @@ const PokerCalculator: React.FC = () => {
     setLoading(true);
     
     try {
-      const response = await axios.post(`${API_URL}/api/calculate`, {
+      const response = await axios.post(`${API_URL}/calculate`, {
         playerCards: validPlayerCards,
         boardCards: validBoardCards
       });
@@ -125,6 +125,12 @@ const PokerCalculator: React.FC = () => {
       calculateProbabilities();
     }
   }, [playerCards, boardCards]);
+  
+  // Function to handle cancel
+  const handleCancel = () => {
+    setSelectionMode(null);
+    setCurrentCardIndex(null);
+  };
   
   return (
     <div className="max-w-6xl mx-auto flex flex-col items-center">
@@ -183,6 +189,7 @@ const PokerCalculator: React.FC = () => {
                 <CardSelector
                   onSelectCard={handleSelectCard}
                   usedCards={usedCards}
+                  onCancel={handleCancel}
                 />
               </div>
             </div>
