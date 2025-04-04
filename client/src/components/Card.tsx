@@ -40,17 +40,17 @@ const Card: React.FC<CardProps> = ({ card, onClick, selectable = false, selected
     
     cardContent = (
       <>
-        <div className={`text-xl font-bold ${getSuitColor(suit)}`}>
+        <div className={`text-lg sm:text-xl font-bold ${getSuitColor(suit)}`}>
           {getValueDisplay(value)}
         </div>
-        <div className={`text-3xl mt-1 ${getSuitColor(suit)}`}>
+        <div className={`text-2xl sm:text-3xl mt-1 ${getSuitColor(suit)}`}>
           {getSuitSymbol(suit)}
         </div>
       </>
     );
   } else {
     cardContent = (
-      <div className="text-gray-500 text-2xl font-light">
+      <div className="text-gray-500 text-xl sm:text-2xl font-light">
         {selectable ? '+' : ''}
       </div>
     );
@@ -60,14 +60,14 @@ const Card: React.FC<CardProps> = ({ card, onClick, selectable = false, selected
     <div 
       onClick={onClick} 
       className={`
-        w-16 h-24 sm:w-20 sm:h-28 rounded-xl flex flex-col justify-center items-center
-        transition-all duration-300 transform
+        w-14 h-20 xs:w-16 xs:h-24 sm:w-20 sm:h-28 rounded-lg sm:rounded-xl flex flex-col justify-center items-center
+        transition-all duration-300 transform select-none
         ${card 
           ? 'bg-gray-100/90 backdrop-blur-sm border border-white/20' 
           : 'glass'
         } 
         ${selectable 
-          ? 'cursor-pointer hover:scale-105 hover:shadow-xl' 
+          ? 'cursor-pointer hover:scale-105 active:scale-95 hover:shadow-xl' 
           : ''
         }
         ${selected 

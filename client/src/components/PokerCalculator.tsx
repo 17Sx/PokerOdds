@@ -140,18 +140,18 @@ const PokerCalculator: React.FC = () => {
   };
   
   return (
-    <div className="max-w-6xl mx-auto flex flex-col items-center">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 overflow-hidden">
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
-        <div className="lg:col-span-2">
-          <div className="glass p-6 rounded-xl shadow-lg backdrop-blur-md mb-8 glow-subtle">
-            <h2 className="text-2xl font-semibold mb-8 text-white text-center">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="lg:col-span-1">
+          <div className="glass p-4 sm:p-6 rounded-xl shadow-lg backdrop-blur-md mb-6 glow-subtle">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-white text-center">
               Your Cards
             </h2>
             
-            <div className="mb-10">
-              <h3 className="text-xl font-medium mb-6 text-gray-300 text-center">Player Hand</h3>
-              <div className="flex flex-wrap justify-center gap-6">
+            <div className="mb-8">
+              <h3 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6 text-gray-300 text-center">Player Hand</h3>
+              <div className="flex flex-wrap justify-center gap-4">
                 {playerCards.map((card, index) => (
                   <Card
                     key={`player-${index}`}
@@ -163,9 +163,9 @@ const PokerCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div className="mb-10">
-              <h3 className="text-xl font-medium mb-6 text-gray-300 text-center">Board</h3>
-              <div className="flex flex-wrap gap-6 justify-center">
+            <div className="mb-8">
+              <h3 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6 text-gray-300 text-center">Board</h3>
+              <div className="flex flex-wrap gap-4 justify-center">
                 {boardCards.map((card, index) => (
                   <Card
                     key={`board-${index}`}
@@ -177,8 +177,8 @@ const PokerCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div className="mb-10">
-              <h3 className="text-xl font-medium mb-6 text-gray-300 text-center">Number of Opponents</h3>
+            <div className="mb-8">
+              <h3 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6 text-gray-300 text-center">Number of Opponents</h3>
               <div className="flex justify-center">
                 <select
                   value={numOpponents}
@@ -186,7 +186,7 @@ const PokerCalculator: React.FC = () => {
                   className="glass px-4 py-2 text-white rounded-lg 
                   hover:bg-white/10 transform hover:scale-105 transition-all 
                   border border-white/10 shadow-lg backdrop-blur-md 
-                  appearance-none bg-transparent min-w-[120px] text-center
+                  appearance-none bg-transparent min-w-[100px] sm:min-w-[120px] text-center
                   focus:outline-none focus:ring-2 focus:ring-white/30"
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
@@ -196,10 +196,10 @@ const PokerCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-10 flex justify-center">
+            <div className="mt-6 flex justify-center">
               <button
                 onClick={handleReset}
-                className="glass px-8 py-3 text-white rounded-lg 
+                className="glass px-6 sm:px-8 py-2 sm:py-3 text-white rounded-lg 
                 hover:bg-white/10 transform hover:scale-105 transition-all 
                 border border-white/10 shadow-lg glow-subtle font-medium
                 backdrop-blur-md relative z-10"
@@ -210,25 +210,21 @@ const PokerCalculator: React.FC = () => {
           </div>
           
           {selectionMode && currentCardIndex !== null && (
-            <div className="flex justify-center">
-              <div className="w-full max-w-lg">
-                <CardSelector
-                  onSelectCard={handleSelectCard}
-                  usedCards={usedCards}
-                  onCancel={handleCancel}
-                />
-              </div>
+            <div className="mt-6">
+              <CardSelector
+                onSelectCard={handleSelectCard}
+                usedCards={usedCards}
+                onCancel={handleCancel}
+              />
             </div>
           )}
         </div>
         
-        <div className="flex justify-center">
-          <div className="w-full">
-            <ProbabilityResults
-              results={results}
-              loading={loading}
-            />
-          </div>
+        <div className="lg:col-span-2">
+          <ProbabilityResults
+            results={results}
+            loading={loading}
+          />
         </div>
       </div>
     </div>
