@@ -156,10 +156,70 @@ const compareHands = (hand1: string[], hand2: string[]): number => {
   const eval1 = evaluateHand(hand1);
   const eval2 = evaluateHand(hand2);
   
+  // Si les types de mains sont différents, la main avec le score le plus élevé gagne
   if (eval1.score > eval2.score) return 1;
   if (eval1.score < eval2.score) return -1;
   
-  return 0; // Tie (to be developed further)
+  // Si les types de mains sont identiques, on compare en fonction du type
+  const handType = eval1.score;
+  
+  // Transformer les cartes en rangs (triés du plus fort au plus faible)
+  const ranks1 = hand1.map(card => VALUES.indexOf(card.charAt(0) as typeof VALUES[number])).sort((a, b) => b - a);
+  const ranks2 = hand2.map(card => VALUES.indexOf(card.charAt(0) as typeof VALUES[number])).sort((a, b) => b - a);
+  
+  // Pour une quinte flush, quinte flush royale, couleur ou suite, on compare simplement les rangs
+  if (handType === 9 || handType === 8 || handType === 5 || handType === 4) {
+    // Cas spécial : suite As-5
+    const isAceLow1 = ranks1.includes(12) && ranks1.includes(3) && ranks1.includes(2) && ranks1.includes(1) && ranks1.includes(0);
+    const isAceLow2 = ranks2.includes(12) && ranks2.includes(3) && ranks2.includes(2) && ranks2.includes(1) && ranks2.includes(0);
+    
+    // La suite As-5 est la plus faible des suites
+    if (isAceLow1 && !isAceLow2) return -1;
+    if (!isAceLow1 && isAceLow2) return 1;
+    if (isAceLow1 && isAceLow2) return 0; // Égalité parfaite pour deux suites As-5
+    
+    // Pour les autres suites, on compare simplement la carte la plus haute
+    for (let i = 0; i < Math.min(ranks1.length, ranks2.length); i++) {
+      if (ranks1[i] > ranks2[i]) return 1;
+      if (ranks1[i] < ranks2[i]) return -1;
+    }
+    return 0;
+  }
+  
+  // Pour les autres types de mains (brelan, full, carré, etc.), on trie par fréquence puis par valeur
+  const valueCounts1: Record<number, number> = {};
+  for (const rank of ranks1) {
+    valueCounts1[rank] = (valueCounts1[rank] || 0) + 1;
+  }
+  
+  const valueCounts2: Record<number, number> = {};
+  for (const rank of ranks2) {
+    valueCounts2[rank] = (valueCounts2[rank] || 0) + 1;
+  }
+  
+  // On trie les rangs par fréquence (descendant) puis par valeur (descendant)
+  const sortedRanks1 = Object.entries(valueCounts1)
+    .sort(([rankA, countA], [rankB, countB]) => {
+      if (countA !== countB) return countB - countA;
+      return parseInt(rankB) - parseInt(rankA);
+    })
+    .map(([rank]) => parseInt(rank));
+  
+  const sortedRanks2 = Object.entries(valueCounts2)
+    .sort(([rankA, countA], [rankB, countB]) => {
+      if (countA !== countB) return countB - countA;
+      return parseInt(rankB) - parseInt(rankA);
+    })
+    .map(([rank]) => parseInt(rank));
+  
+  // Comparer les rangs un par un
+  for (let i = 0; i < Math.min(sortedRanks1.length, sortedRanks2.length); i++) {
+    if (sortedRanks1[i] > sortedRanks2[i]) return 1;
+    if (sortedRanks1[i] < sortedRanks2[i]) return -1;
+  }
+  
+  // Si on arrive ici, c'est une égalité parfaite
+  return 0;
 };
 
 const simulateHand = (playerCards: string[], boardCards: string[], remainingDeck: string[], numOpponents: number = 1): SimulationResult => {
