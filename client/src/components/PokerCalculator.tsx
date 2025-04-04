@@ -30,6 +30,8 @@ const PokerCalculator: React.FC = () => {
   
   const [loading, setLoading] = useState<boolean>(false);
   
+  const [numOpponents, setNumOpponents] = useState<number>(1);
+  
   const usedCards = [...playerCards, ...boardCards].filter(card => card !== null) as string[];
   
   const handlePlayerCardClick = (index: number) => {
@@ -89,11 +91,16 @@ const PokerCalculator: React.FC = () => {
     
     try {
       console.log('Sending request to:', API_URL);
-      console.log('With data:', { playerCards: validPlayerCards, boardCards: validBoardCards });
+      console.log('With data:', { 
+        playerCards: validPlayerCards, 
+        boardCards: validBoardCards,
+        numOpponents
+      });
       
       const response = await axios.post(`${API_URL}/calculate`, {
         playerCards: validPlayerCards,
-        boardCards: validBoardCards
+        boardCards: validBoardCards,
+        numOpponents
       });
       
       console.log('Response received:', response.data);
@@ -108,7 +115,7 @@ const PokerCalculator: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [playerCards, boardCards]);
+  }, [playerCards, boardCards, numOpponents]);
   
   useEffect(() => {
     const validPlayerCards = playerCards.filter(card => card !== null);
@@ -158,6 +165,25 @@ const PokerCalculator: React.FC = () => {
                     selectable={true}
                   />
                 ))}
+              </div>
+            </div>
+            
+            <div className="mb-10">
+              <h3 className="text-xl font-medium mb-6 text-gray-300 text-center">Number of Opponents</h3>
+              <div className="flex justify-center">
+                <select
+                  value={numOpponents}
+                  onChange={(e) => setNumOpponents(parseInt(e.target.value))}
+                  className="glass px-4 py-2 text-white rounded-lg 
+                  hover:bg-white/10 transform hover:scale-105 transition-all 
+                  border border-white/10 shadow-lg backdrop-blur-md 
+                  appearance-none bg-transparent min-w-[120px] text-center
+                  focus:outline-none focus:ring-2 focus:ring-white/30"
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+                    <option key={num} value={num} className="bg-gray-800">{num}</option>
+                  ))}
+                </select>
               </div>
             </div>
             

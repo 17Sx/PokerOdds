@@ -10,10 +10,11 @@ interface CalculationResults {
 
 export async function calculateProbabilities(
   playerCards: string[],
-  boardCards: string[]
+  boardCards: string[],
+  numOpponents: number = 1
 ): Promise<CalculationResults> {
   // Calculer les probabilités
-  const probabilities = calculateProbs(playerCards, boardCards);
+  const probabilities = calculateProbs(playerCards, boardCards, numOpponents);
   
   // Calculer la main actuelle si nous avons au moins 3 cartes sur le board
   let currentHand = null;

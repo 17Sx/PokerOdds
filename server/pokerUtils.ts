@@ -162,7 +162,7 @@ const compareHands = (hand1: string[], hand2: string[]): number => {
   return 0; // Tie (to be developed further)
 };
 
-const simulateHand = (playerCards: string[], boardCards: string[], remainingDeck: string[]): SimulationResult => {
+const simulateHand = (playerCards: string[], boardCards: string[], remainingDeck: string[], numOpponents: number = 1): SimulationResult => {
   const cardsNeeded = 5 - boardCards.length;
   
   const simulatedBoard = [...boardCards];
@@ -172,23 +172,48 @@ const simulateHand = (playerCards: string[], boardCards: string[], remainingDeck
   
   const playerHand = [...playerCards, ...simulatedBoard];
   
-  const opponent = {
-    cards: [remainingDeck.pop()!, remainingDeck.pop()!],
-    hand: [] as string[]
-  };
-  opponent.hand = [...opponent.cards, ...simulatedBoard];
+  // Créer plusieurs adversaires
+  const opponents = [];
+  for (let i = 0; i < numOpponents; i++) {
+    opponents.push({
+      cards: [remainingDeck.pop()!, remainingDeck.pop()!],
+      hand: [] as string[]
+    });
+  }
   
-  const result = compareHands(playerHand, opponent.hand);
+  // Compléter les mains des adversaires avec le board
+  for (const opponent of opponents) {
+    opponent.hand = [...opponent.cards, ...simulatedBoard];
+  }
+  
+  // Comparer la main du joueur avec chaque adversaire
+  let win = true;
+  let tie = false;
+  
+  for (const opponent of opponents) {
+    const result = compareHands(playerHand, opponent.hand);
+    
+    if (result < 0) {
+      // Si le joueur perd contre un seul adversaire, il perd la main
+      win = false;
+      tie = false;
+      break;
+    } else if (result === 0) {
+      // En cas d'égalité avec un adversaire, on considère une égalité potentielle
+      win = false;
+      tie = true;
+    }
+  }
   
   return {
-    win: result > 0,
-    tie: result === 0,
-    loss: result < 0,
+    win,
+    tie,
+    loss: !win && !tie,
     board: simulatedBoard
   };
 };
 
-const calculateProbabilities = (playerCards: string[], boardCards: string[], numSimulations = 10000): ProbabilityResults => {
+const calculateProbabilities = (playerCards: string[], boardCards: string[], numOpponents: number = 1, numSimulations = 10000): ProbabilityResults => {
   let wins = 0;
   let ties = 0;
   
@@ -198,7 +223,7 @@ const calculateProbabilities = (playerCards: string[], boardCards: string[], num
   for (let i = 0; i < numSimulations; i++) {
     const shuffledDeck = shuffleDeck(deck);
     
-    const result = simulateHand(playerCards, boardCards, shuffledDeck);
+    const result = simulateHand(playerCards, boardCards, shuffledDeck, numOpponents);
     
     if (result.win) wins++;
     if (result.tie) ties++;

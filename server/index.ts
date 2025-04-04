@@ -10,13 +10,19 @@ app.use(express.json());
 
 app.post('/api/calculate', async (req, res) => {
   try {
-    const { playerCards, boardCards } = req.body;
+    const { playerCards, boardCards, numOpponents = 1 } = req.body;
     
     if (!playerCards || !Array.isArray(playerCards) || playerCards.length === 0) {
       return res.status(400).json({ message: 'At least one player card is required' });
     }
 
-    const results = await calculateProbabilities(playerCards, boardCards || []);
+    // Vérifier que numOpponents est un nombre valide
+    const opponents = parseInt(numOpponents);
+    if (isNaN(opponents) || opponents < 1 || opponents > 9) {
+      return res.status(400).json({ message: 'Number of opponents must be between 1 and 9' });
+    }
+
+    const results = await calculateProbabilities(playerCards, boardCards || [], opponents);
     res.json(results);
   } catch (error) {
     console.error('Error calculating probabilities:', error);
