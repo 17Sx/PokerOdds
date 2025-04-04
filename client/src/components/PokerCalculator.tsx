@@ -13,8 +13,17 @@ interface CalculationResults {
   winProbability: string;
   tieProbability: string;
   lossProbability: string;
+  hitProbability: string;
   currentHand: string | null;
   outs: string[];
+  outDetails?: {
+    byType: { [key: string]: number },
+    total: number
+  };
+  opponentImpact?: Array<{
+    opponents: number;
+    winProbability: string;
+  }>;
 }
 
 const PokerCalculator: React.FC = () => {
