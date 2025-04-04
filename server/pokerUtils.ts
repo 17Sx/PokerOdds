@@ -9,12 +9,22 @@ interface SimulationResult {
   tie: boolean;
   loss: boolean;
   board: string[];
+  handImproved: boolean;
+  finalHandType: string;
 }
 
 interface ProbabilityResults {
   winProbability: string;
   tieProbability: string;
   lossProbability: string;
+  hitProbability: string;
+  outCards: string[];
+  outTypes: { [key: string]: number };
+}
+
+interface OutDetail {
+  card: string;
+  makesWith: string;
 }
 
 // Constants
@@ -222,7 +232,26 @@ const compareHands = (hand1: string[], hand2: string[]): number => {
   return 0;
 };
 
+const getHandTypeFromScore = (score: number): string => {
+  switch (score) {
+    case 9: return 'Royal Flush';
+    case 8: return 'Straight Flush';
+    case 7: return 'Four of a Kind';
+    case 6: return 'Full House';
+    case 5: return 'Flush';
+    case 4: return 'Straight';
+    case 3: return 'Three of a Kind';
+    case 2: return 'Two Pair';
+    case 1: return 'One Pair';
+    default: return 'High Card';
+  }
+};
+
 const simulateHand = (playerCards: string[], boardCards: string[], remainingDeck: string[], numOpponents: number = 1): SimulationResult => {
+  // Évaluer la main actuelle
+  const currentEval = evaluateHand([...playerCards, ...boardCards]);
+  const initialHandType = currentEval.type;
+
   const cardsNeeded = 5 - boardCards.length;
   
   const simulatedBoard = [...boardCards];
@@ -231,6 +260,13 @@ const simulateHand = (playerCards: string[], boardCards: string[], remainingDeck
   }
   
   const playerHand = [...playerCards, ...simulatedBoard];
+  
+  // Évaluer la main finale
+  const finalEval = evaluateHand(playerHand);
+  const finalHandType = finalEval.type;
+  
+  // Vérifier si la main s'est améliorée
+  const handImproved = finalEval.score > currentEval.score;
   
   // Créer plusieurs adversaires
   const opponents = [];
@@ -269,81 +305,100 @@ const simulateHand = (playerCards: string[], boardCards: string[], remainingDeck
     win,
     tie,
     loss: !win && !tie,
-    board: simulatedBoard
+    board: simulatedBoard,
+    handImproved,
+    finalHandType
   };
 };
 
 const calculateProbabilities = (playerCards: string[], boardCards: string[], numOpponents: number = 1, numSimulations = 10000): ProbabilityResults => {
   let wins = 0;
   let ties = 0;
+  let hits = 0;
   
   const usedCards = [...playerCards, ...boardCards];
   let deck = generateDeck().filter(card => !usedCards.includes(card));
+
+  // Calculer l'évaluation actuelle de la main
+  const currentEval = boardCards.length >= 3 ? evaluateHand([...playerCards, ...boardCards]) : { score: -1, type: 'Incomplete' };
+  
+  // Stocker les types de mains finales pour l'analyse
+  const handTypes: Record<string, number> = {};
   
   for (let i = 0; i < numSimulations; i++) {
-    const shuffledDeck = shuffleDeck(deck);
+    const shuffledDeck = shuffleDeck([...deck]); // Create a copy to avoid modifying the original deck
     
     const result = simulateHand(playerCards, boardCards, shuffledDeck, numOpponents);
     
     if (result.win) wins++;
     if (result.tie) ties++;
+    if (result.handImproved || (currentEval.score === -1 && result.finalHandType !== 'High Card')) {
+      hits++;
+    }
+    
+    // Incrémenter le compteur pour ce type de main
+    handTypes[result.finalHandType] = (handTypes[result.finalHandType] || 0) + 1;
   }
   
   const winProbability = (wins / numSimulations * 100).toFixed(2);
   const tieProbability = (ties / numSimulations * 100).toFixed(2);
   const lossProbability = (100 - parseFloat(winProbability) - parseFloat(tieProbability)).toFixed(2);
+  const hitProbability = (hits / numSimulations * 100).toFixed(2);
+  
+  // Calculer les outs détaillés
+  const outDetails = calculateDetailedOuts(playerCards, boardCards);
+  
+  // Extraire les cartes et les regrouper par type
+  const outCards = outDetails.map(out => out.card);
+  
+  const outTypes: { [key: string]: number } = {};
+  for (const out of outDetails) {
+    outTypes[out.makesWith] = (outTypes[out.makesWith] || 0) + 1;
+  }
   
   return {
     winProbability,
     tieProbability,
-    lossProbability
+    lossProbability,
+    hitProbability,
+    outCards,
+    outTypes
   };
 };
 
+const calculateDetailedOuts = (playerCards: string[], boardCards: string[]): OutDetail[] => {
+  if (boardCards.length < 3) {
+    return []; // Pas assez de cartes pour calculer les outs précisément
+  }
+
+  const currentHand = [...playerCards, ...boardCards];
+  const currentEval = evaluateHand(currentHand);
+  
+  const usedCards = [...playerCards, ...boardCards];
+  const availableCards = generateDeck().filter(card => !usedCards.includes(card));
+  
+  const outDetails: OutDetail[] = [];
+  
+  // Pour chaque carte disponible, vérifier si elle améliore la main
+  for (const card of availableCards) {
+    const newHand = [...currentHand, card];
+    const newEval = evaluateHand(newHand);
+    
+    if (newEval.score > currentEval.score) {
+      outDetails.push({
+        card,
+        makesWith: newEval.type
+      });
+    }
+  }
+  
+  return outDetails;
+};
+
 const calculateOuts = (playerCards: string[], boardCards: string[]): string[] => {
-  const allCards = [...playerCards, ...boardCards];
-  const evaluation = evaluateHand(allCards);
-  
-  // Si nous n'avons pas assez de cartes pour évaluer la main, retourner un tableau vide
-  if (allCards.length < 5) {
-    return [];
-  }
-  
-  const outs: string[] = [];
-  
-  // Ajouter des outs en fonction de la main actuelle
-  switch (evaluation.type) {
-    case 'High Card':
-      outs.push('Any card to make a pair');
-      break;
-    case 'One Pair':
-      outs.push('Any card to make three of a kind');
-      break;
-    case 'Two Pair':
-      outs.push('Any card to make a full house');
-      break;
-    case 'Three of a Kind':
-      outs.push('Any card to make four of a kind');
-      outs.push('Any card to make a full house');
-      break;
-    case 'Straight':
-      outs.push('Any card to make a straight flush');
-      break;
-    case 'Flush':
-      outs.push('Any card to make a straight flush');
-      break;
-    case 'Full House':
-      outs.push('Any card to make four of a kind');
-      break;
-    case 'Four of a Kind':
-      outs.push('Any card to make a straight flush');
-      break;
-    case 'Straight Flush':
-      outs.push('Any card to make a royal flush');
-      break;
-  }
-  
-  return outs;
+  // Obsolète, utiliser calculateDetailedOuts à la place
+  const outDetails = calculateDetailedOuts(playerCards, boardCards);
+  return outDetails.map(out => out.card);
 };
 
 export {
@@ -352,5 +407,7 @@ export {
   evaluateHand,
   compareHands,
   calculateProbabilities,
-  calculateOuts
+  calculateOuts,
+  calculateDetailedOuts,
+  getHandTypeFromScore
 }; 
